@@ -1,0 +1,22 @@
+\\Create own var region polygon, Import MOD13Q1 NDVI as collection
+var ndvi = collection.select('NDVI');
+var filtered = ndvi.filterBounds(region).filter(ee.Filter.date('2021-01-10', '2021-06-10'));
+var ndviVis = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+var image = filtered.mean();
+Map.addLayer(image, ndviVis, 'mean');
+
+Export.image.toDrive({
+	image: image,
+	description: 'ndvi_butuan',
+	scale: 250,
+	region: region, 
+	fileFormat: "GeoTIFF"
+});
